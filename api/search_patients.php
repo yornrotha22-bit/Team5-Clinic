@@ -5,18 +5,18 @@ header('Content-Type: application/json');
 
 $q = trim($_GET['q'] ?? '');
 
-if($q === ''){
+if ($q === '') {
     echo json_encode([]);
     exit;
 }
 
-$stmt = $pdo->prepare(
-    "SELECT id, name, phone
-     FROM patients
-     WHERE name LIKE ?
-     ORDER BY name ASC
-     LIMIT 10"
-);
+$stmt = $pdo->prepare("
+    SELECT id, name, phone
+    FROM patients
+    WHERE name LIKE ?
+    ORDER BY name ASC
+    LIMIT 10
+");
 
 $stmt->execute(["%$q%"]);
 

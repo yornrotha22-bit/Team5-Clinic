@@ -14,7 +14,7 @@ $stmt = $pdo->prepare(
     "SELECT id, name, phone
      FROM patients
      WHERE name LIKE ?
-     ORDER BY name
+     ORDER BY name ASC
      LIMIT 10"
 );
 

@@ -4,26 +4,35 @@ include '../../includes/header.php';
 include '../../includes/sidebar.php';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $patient_id = $_POST['patient_id'];
-    $doctor_id  = $_POST['doctor_id'];
-    $date       = $_POST['appointment_date'];
 
-    $stmt = $pdo->prepare(
-        "INSERT INTO appointments(patient_id, doctor_id, appointment_date)
-         VALUES(?,?,?)"
-    );
+    $patient_id = $_POST['patient_id'] ?? '';
+    $doctor_id  = $_POST['doctor_id'] ?? '';
+    $appointment_date = $_POST['appointment_date'] ?? '';
 
-    $stmt->execute([$patient_id, $doctor_id, $date]);
+    if($patient_id && $doctor_id && $appointment_date){
 
-    header('Location: index.php');
-    exit;
+        $stmt = $pdo->prepare(
+            "INSERT INTO appointments(patient_id, doctor_id, appointment_date)
+             VALUES(?,?,?)"
+        );
+
+        $stmt->execute([$patient_id, $doctor_id, $appointment_date]);
+
+        header('Location: index.php?success=Appointment created successfully');
+        exit;
+    }
 }
 
-$patients = $pdo->query('SELECT id,name FROM patients ORDER BY name')->fetchAll();
-$doctors  = $pdo->query('SELECT id,name FROM doctors ORDER BY name')->fetchAll();
+$patients = $pdo->query(
+    'SELECT id,name FROM patients ORDER BY name'
+)->fetchAll(PDO::FETCH_ASSOC);
+
+$doctors = $pdo->query(
+    'SELECT id,name FROM doctors ORDER BY name'
+)->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<h2>Create Appointment</h2>
+<h2>➕ Create Appointment</h2>
 
 <form method="POST" class="form-card">
 
@@ -48,9 +57,13 @@ $doctors  = $pdo->query('SELECT id,name FROM doctors ORDER BY name')->fetchAll()
     </select>
 
     <label>Appointment Date & Time</label>
-    <input type="datetime-local" name="appointment_date" required>
+    <input type="datetime-local"
+           name="appointment_date"
+           min="<?= date('Y-m-d\\TH:i') ?>"
+           required>
 
     <br><br>
+
     <button type="submit" class="btn"> Save Appointment</button>
     <a href="index.php" class="btn-secondary">Cancel</a>
 </form>

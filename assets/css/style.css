@@ -1,16 +1,15 @@
-/* Appointment UI */
+/* ===== Appointment UI ===== */
 
-.toolbar{
-    margin:15px 0;
-}
+.toolbar{ margin:15px 0; }
 
-.btn, .btn-success, .btn-danger, .btn-secondary{
+.btn,.btn-success,.btn-danger,.btn-secondary{
     padding:8px 14px;
     border-radius:6px;
     text-decoration:none;
-    color:white;
+    color:#fff;
     font-size:14px;
     margin-right:5px;
+    display:inline-block;
 }
 
 .btn{ background:#0d6efd; }
@@ -21,7 +20,7 @@
 .table{
     width:100%;
     border-collapse:collapse;
-    background:white;
+    background:#fff;
     border-radius:10px;
     overflow:hidden;
     box-shadow:0 2px 8px rgba(0,0,0,.08);
@@ -29,7 +28,7 @@
 
 .table th{
     background:#0d6efd;
-    color:white;
+    color:#fff;
     padding:12px;
 }
 
@@ -41,17 +40,17 @@
 .badge{
     padding:5px 10px;
     border-radius:20px;
-    color:white;
+    color:#fff;
     font-size:12px;
     font-weight:bold;
 }
 
-.badge.pending{ background:#ffc107; color:#000; }
-.badge.completed{ background:#198754; }
-.badge.cancelled{ background:#dc3545; }
+.badge.pending{ background:#f59e0b; color:#000; }
+.badge.completed{ background:#10b981; }
+.badge.cancelled{ background:#ef4444; }
 
 .form-card{
-    background:white;
+    background:#fff;
     padding:20px;
     border-radius:10px;
     box-shadow:0 2px 8px rgba(0,0,0,.08);
@@ -62,7 +61,7 @@
     display:block;
     margin-top:12px;
     margin-bottom:6px;
-    font-weight:bold;
+    font-weight:600;
 }
 
 .form-card input,
@@ -89,7 +88,7 @@
 .search-result{
     position:absolute;
     width:100%;
-    background:white;
+    background:#fff;
     border:1px solid #ddd;
     border-radius:6px;
     margin-top:4px;
@@ -102,6 +101,85 @@
     border-bottom:1px solid #eee;
 }
 
-.search-item:hover{
-    background:#f8f9fa;
+.search-item:hover{ background:#f8f9fa; }
+
+.search-name{
+    font-weight:700;
+    color:#111827;
+}
+
+.search-phone{
+    font-size:13px;
+    color:#6b7280;
+}
+
+.filter-form{
+    margin:15px 0;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.filter-form select{
+    padding:8px 10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+.toast{
+    padding:12px 16px;
+    border-radius:8px;
+    margin:10px 0;
+    font-weight:600;
+}
+
+.toast.success{
+    background:#dcfce7;
+    color:#166534;
+    border:1px solid #86efac;
+}
+
+.today-panel{
+    background:#fff;
+    padding:18px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    margin:20px 0;
+}
+
+.today-panel h3{ margin-top:0; }
+
+.empty-state{
+    text-align:center;
+    padding:40px 20px;
+    color:#6b7280;
+}
+
+.stat{
+    text-align:center;
+    color:#fff;
+}
+
+.stat h3{
+    margin:0;
+    font-size:18px;
+}
+
+.stat p{
+    font-size:32px;
+    font-weight:700;
+    margin:10px 0 0;
+}
+
+.pending-card{ background:#f59e0b; }
+.completed-card{ background:#10b981; }
+.cancelled-card{ background:#ef4444; }
+
+@media (max-width:768px){
+    .cards{ grid-template-columns:1fr; }
+    .table{ font-size:14px; }
+    .btn,.btn-success,.btn-danger,.btn-secondary{
+        margin-top:5px;
+    }
 }

@@ -3,8 +3,8 @@ require_once '../../config/db.php';
 
 $id = $_GET['id'] ?? 0;
 
-$stmt = $pdo->prepare('DELETE FROM appointments WHERE id=?');
+$stmt = $pdo->prepare("DELETE FROM appointments WHERE id=?");
 $stmt->execute([$id]);
 
-header('Location: index.php?success=Appointment deleted');
+header('Location: index.php');
 exit;

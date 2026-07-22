@@ -2,7 +2,7 @@
 $host   = 'localhost';
 $dbname = 'clinic_db';
 $user   = 'root';
-$pass   = '200612';
+$pass   = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass);

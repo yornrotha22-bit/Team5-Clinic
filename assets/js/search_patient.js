@@ -25,7 +25,7 @@ if (input) {
             resultBox.innerHTML = data.map(p => `
                 <div class="search-item">
                     <strong>${p.name}</strong><br>
-                    📞 ${p.phone}
+                     ${p.phone}
                 </div>
             `).join('');
 

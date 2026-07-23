@@ -26,8 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Please fill in all required fields!";
     }
 }
-
-// Fetch departments សម្រាប់ dropdown
 $departments = $pdo->query("SELECT * FROM departments")->fetchAll();
 
 include __DIR__ . '/../../includes/header.php';

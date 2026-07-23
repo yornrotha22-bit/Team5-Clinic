@@ -15,4 +15,8 @@ $stmt = $pdo->prepare(
 
 $stmt->execute(["%$q%"]);
 
+<<<<<<< HEAD
 echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+=======
+echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+>>>>>>> rotha-data-management

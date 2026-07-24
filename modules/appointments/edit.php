@@ -1,6 +1,19 @@
 <?php
 require_once __DIR__ . '/../../config/db.php';
 
+/* ==========================
+   GET APPOINTMENT ID
+========================== */
+
+$id = intval($_GET['id'] ?? 0);
+
+if ($id <= 0) {
+
+    header("Location: index.php?page=appointments");
+    exit;
+
+}
+
 $error = '';
 $success = '';
 
@@ -8,20 +21,18 @@ $success = '';
    LOAD PATIENTS
 ========================== */
 
-$patientStmt = $pdo->query("
+$patients = $pdo->query("
     SELECT id, name
     FROM patients
     ORDER BY name ASC
-");
-
-$patients = $patientStmt->fetchAll(PDO::FETCH_ASSOC);
+")->fetchAll(PDO::FETCH_ASSOC);
 
 
 /* ==========================
    LOAD DOCTORS
 ========================== */
 
-$doctorStmt = $pdo->query("
+$doctors = $pdo->query("
     SELECT
         d.id,
         d.name,
@@ -30,64 +41,92 @@ $doctorStmt = $pdo->query("
     INNER JOIN departments dep
         ON d.department_id = dep.id
     ORDER BY d.name ASC
-");
-
-$doctors = $doctorStmt->fetchAll(PDO::FETCH_ASSOC);
+")->fetchAll(PDO::FETCH_ASSOC);
 
 
 /* ==========================
-   SAVE APPOINTMENT
+   LOAD APPOINTMENT
+========================== */
+
+$stmt = $pdo->prepare("
+    SELECT *
+    FROM appointments
+    WHERE id = ?
+");
+
+$stmt->execute([$id]);
+
+$appointment = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$appointment) {
+
+    header("Location: index.php?page=appointments");
+    exit;
+
+}
+
+
+/* ==========================
+   UPDATE
 ========================== */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $patient_id = intval($_POST['patient_id'] ?? 0);
-    $doctor_id  = intval($_POST['doctor_id'] ?? 0);
+
+    $doctor_id = intval($_POST['doctor_id'] ?? 0);
 
     $appointment_date = trim($_POST['appointment_date'] ?? '');
+
     $appointment_time = trim($_POST['appointment_time'] ?? '');
 
     $status = trim($_POST['status'] ?? 'Pending');
-    $notes  = trim($_POST['notes'] ?? '');
 
-    // Validation
+    $notes = trim($_POST['notes'] ?? '');
+
     if (
+
         $patient_id <= 0 ||
+
         $doctor_id <= 0 ||
+
         empty($appointment_date) ||
+
         empty($appointment_time)
+
     ) {
 
         $error = "Please fill in all required fields.";
 
     } else {
 
-        $sql = "
-            INSERT INTO appointments
-            (
-                patient_id,
-                doctor_id,
-                appointment_date,
-                appointment_time,
-                status,
-                notes
-            )
-            VALUES
-            (
-                ?, ?, ?, ?, ?, ?
-            )
-        ";
+        $update = $pdo->prepare("
+            UPDATE appointments
+            SET
+                patient_id = ?,
+                doctor_id = ?,
+                appointment_date = ?,
+                appointment_time = ?,
+                status = ?,
+                notes = ?
+            WHERE id = ?
+        ");
 
-        $stmt = $pdo->prepare($sql);
-
-        $saved = $stmt->execute([
+        $saved = $update->execute([
 
             $patient_id,
+
             $doctor_id,
+
             $appointment_date,
+
             $appointment_time,
+
             $status,
-            $notes
+
+            $notes,
+
+            $id
 
         ]);
 
@@ -98,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } else {
 
-            $error = "Unable to save appointment.";
+            $error = "Unable to update appointment.";
 
         }
 
@@ -120,16 +159,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="page-header">
 
         <div>
-            <h2>New Appointment</h2>
-            <p>Create a new appointment for a patient.</p>
+
+            <h2>Edit Appointment</h2>
+
+            <p>Update appointment information.</p>
+
         </div>
 
         <a href="index.php?page=appointments" class="btn-secondary">
+
             ← Back
+
         </a>
 
     </div>
-
 
     <?php if($error): ?>
 
@@ -140,7 +183,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
     <?php endif; ?>
-
 
     <form method="POST" class="appointment-form">
 
@@ -156,25 +198,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <label>
 
-                        Patient
-                        <span>*</span>
+                        Patient <span>*</span>
 
                     </label>
 
-                    <select
-                        name="patient_id"
-                        required>
-
-                        <option value="">
-
-                            Select Patient
-
-                        </option>
+                    <select name="patient_id" required>
 
                         <?php foreach($patients as $patient): ?>
 
                             <option
-                                value="<?= $patient['id'] ?>">
+                                value="<?= $patient['id'] ?>"
+                                <?= $appointment['patient_id'] == $patient['id'] ? 'selected' : '' ?>>
 
                                 <?= htmlspecialchars($patient['name']) ?>
 
@@ -193,8 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <label>
 
-                        Doctor
-                        <span>*</span>
+                        Doctor <span>*</span>
 
                     </label>
 
@@ -203,17 +236,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         name="doctor_id"
                         required>
 
-                        <option value="">
-
-                            Select Doctor
-
-                        </option>
-
                         <?php foreach($doctors as $doctor): ?>
 
                             <option
                                 value="<?= $doctor['id'] ?>"
-                                data-department="<?= htmlspecialchars($doctor['department_name']) ?>">
+                                data-department="<?= htmlspecialchars($doctor['department_name']) ?>"
+                                <?= $appointment['doctor_id'] == $doctor['id'] ? 'selected' : '' ?>>
 
                                 <?= htmlspecialchars($doctor['name']) ?>
 
@@ -239,8 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input
                         type="text"
                         id="departmentBox"
-                        readonly
-                        placeholder="Automatically selected">
+                        readonly>
 
                 </div>
 
@@ -249,37 +276,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group">
 
-                    <label>
-
-                        Status
-
-                    </label>
+                    <label>Status</label>
 
                     <select name="status">
 
-                        <option value="Pending">
+                        <?php
 
-                            Pending
+                        $statuses = [
+
+                            'Pending',
+
+                            'Approved',
+
+                            'Completed',
+
+                            'Cancelled'
+
+                        ];
+
+                        foreach($statuses as $status):
+
+                        ?>
+
+                        <option
+                            value="<?= $status ?>"
+                            <?= $appointment['status'] == $status ? 'selected' : '' ?>>
+
+                            <?= $status ?>
 
                         </option>
 
-                        <option value="Approved">
-
-                            Approved
-
-                        </option>
-
-                        <option value="Completed">
-
-                            Completed
-
-                        </option>
-
-                        <option value="Cancelled">
-
-                            Cancelled
-
-                        </option>
+                        <?php endforeach; ?>
 
                     </select>
 
@@ -292,14 +319,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <label>
 
-                        Appointment Date
-                        <span>*</span>
+                        Appointment Date <span>*</span>
 
                     </label>
 
                     <input
                         type="date"
                         name="appointment_date"
+                        value="<?= htmlspecialchars($appointment['appointment_date']) ?>"
                         required>
 
                 </div>
@@ -311,20 +338,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <label>
 
-                        Appointment Time
-                        <span>*</span>
+                        Appointment Time <span>*</span>
 
                     </label>
 
                     <input
                         type="time"
                         name="appointment_time"
+                        value="<?= htmlspecialchars(substr($appointment['appointment_time'],0,5)) ?>"
                         required>
 
                 </div>
-
-            </div>
-                            <!-- ================= NOTES ================= -->
+                                <!-- ================= NOTES ================= -->
 
                 <div class="form-group full-width">
 
@@ -337,7 +362,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <textarea
                         name="notes"
                         rows="5"
-                        placeholder="Enter appointment notes or reason..."></textarea>
+                        placeholder="Enter appointment notes or reason..."><?= htmlspecialchars($appointment['notes']) ?></textarea>
 
                 </div>
 
@@ -351,7 +376,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     type="submit"
                     class="btn-primary">
 
-                    💾 Save Appointment
+                    💾 Update Appointment
 
                 </button>
 
@@ -376,16 +401,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script>
 
 const doctorSelect = document.getElementById('doctorSelect');
-
 const departmentBox = document.getElementById('departmentBox');
 
-doctorSelect.addEventListener('change', function(){
+function updateDepartment(){
 
-    const option = this.options[this.selectedIndex];
+    const option = doctorSelect.options[doctorSelect.selectedIndex];
 
     departmentBox.value = option.dataset.department || '';
 
-});
+}
+
+doctorSelect.addEventListener('change', updateDepartment);
+
+// Show current department when page loads
+updateDepartment();
 
 </script>
 </body>

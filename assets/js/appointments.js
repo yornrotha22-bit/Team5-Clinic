@@ -1,16 +1,18 @@
 const searchInput = document.getElementById('searchPatient');
 const tableBody = document.getElementById('appointmentsTable');
 
-if(searchInput){
+if(searchInput && tableBody){
+
     searchInput.addEventListener('keyup', function(){
 
         const value = this.value.toLowerCase();
 
-        const rows = tableBody.querySelectorAll('tr');
+        tableBody.querySelectorAll('tr').forEach(row => {
 
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(value) ? '' : 'none';
+            row.style.display =
+                row.innerText.toLowerCase().includes(value)
+                    ? ''
+                    : 'none';
         });
     });
 }

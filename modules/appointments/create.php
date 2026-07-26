@@ -105,17 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 }
-<<<<<<< HEAD
-
-$patients = $pdo->query(
-    'SELECT id,name FROM patients ORDER BY name'
-)->fetchAll(PDO::FETCH_ASSOC);
-
-$doctors = $pdo->query(
-    'SELECT id,name FROM doctors ORDER BY name'
-)->fetchAll(PDO::FETCH_ASSOC);
-=======
->>>>>>> 2127c6620f0140ca0fe0b214361a8e20fe625c7b
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,58 +117,6 @@ $doctors = $pdo->query(
 <body>
     <div class="appointment-form-page">
 
-<<<<<<< HEAD
-<link rel="stylesheet"
-      href="/Team5-Clinic/assets/css/appointments.css">
-
-<div class="form-card">
-
-    <h2>➕ New Appointment</h2>
-
-    <form method="POST">
-
-        <label>Patient</label>
-        <select name="patient_id" required>
-            <option value="">Select patient</option>
-
-            <?php foreach($patients as $p): ?>
-                <option value="<?= $p['id'] ?>">
-                    <?= htmlspecialchars($p['name']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
-        <label>Doctor</label>
-        <select name="doctor_id" required>
-            <option value="">Select doctor</option>
-
-            <?php foreach($doctors as $d): ?>
-                <option value="<?= $d['id'] ?>">
-                    <?= htmlspecialchars($d['name']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
-        <label>Appointment Date & Time</label>
-
-        <input type="datetime-local"
-               name="appointment_date"
-               min="<?= date('Y-m-d\\TH:i') ?>"
-               required>
-
-        <div class="form-actions">
-            <button type="submit" class="btn-primary">
-                Save Appointment
-            </button>
-
-            <a href="index.php" class="btn-secondary">
-                Cancel
-            </a>
-        </div>
-
-    </form>
-</div>
-=======
     <div class="page-header">
 
         <div>
@@ -195,7 +132,6 @@ $doctors = $pdo->query(
 
 
     <?php if($error): ?>
->>>>>>> 2127c6620f0140ca0fe0b214361a8e20fe625c7b
 
         <div class="alert alert-danger">
 

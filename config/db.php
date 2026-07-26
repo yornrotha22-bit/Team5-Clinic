@@ -2,7 +2,7 @@
 $host = "localhost";
 $dbname = "clinic_db";
 $username = "root";
-$password = "";
+$password = "200612";
 
 try {
 

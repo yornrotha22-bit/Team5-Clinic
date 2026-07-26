@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
  * Adjust per-page if needed, e.g. in modules/patients/dashboard.php the login
  * page is two levels up: '../../auth/login.php'
  */
-define('LOGIN_REDIRECT_DEFAULT', '/S_ETEC/PHP + LARAVEL/PHP/TEAM-PROJECT/Team5-Clinic/auth/login.php');
+define('LOGIN_REDIRECT_DEFAULT', '/Team5-Clinic/auth/login.php');
 
 /**
  * Require that a user is logged in. If not, redirect to the login page.

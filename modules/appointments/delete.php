@@ -1,10 +1,27 @@
 <?php
-require_once '../../config/db.php';
+require_once __DIR__ . '/../../config/db.php';
 
-$id = $_GET['id'] ?? 0;
+// Validate ID
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-$stmt = $pdo->prepare('DELETE FROM appointments WHERE id=?');
+if (!$id) {
+    header("Location: ../../index.php?page=appointments");
+    exit;
+}
+
+// Check appointment exists
+$stmt = $pdo->prepare("SELECT id FROM appointments WHERE id = ?");
 $stmt->execute([$id]);
 
-header('Location: index.php?success=Appointment deleted');
+if (!$stmt->fetch()) {
+    header("Location: ../../index.php?page=appointments");
+    exit;
+}
+
+// Delete appointment
+$stmt = $pdo->prepare("DELETE FROM appointments WHERE id = ?");
+$stmt->execute([$id]);
+
+// Redirect back
+header("Location: ../../index.php?page=appointments");
 exit;

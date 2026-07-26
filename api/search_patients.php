@@ -1,7 +1,8 @@
 <?php
-require_once '../config/db.php';
 
-header('Content-Type: application/json');
+require_once __DIR__.'/../config/db.php';
+
+header("Content-Type: application/json");
 
 $q = trim($_GET['q'] ?? '');
 

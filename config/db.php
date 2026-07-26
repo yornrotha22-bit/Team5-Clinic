@@ -3,9 +3,9 @@
 // Database connection using PDO
 
 $host = 'localhost';
-$dbname = 'team5_clinic'; // change to your actual database name
+$dbname = 'team5_clinic';
 $username = 'root';
-$password = ''; // default XAMPP password is empty
+$password = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

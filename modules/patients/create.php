@@ -4,8 +4,6 @@ checkAuth();
 require_once __DIR__ . '/../../config/db.php';
 
 $error = '';
-
-// រក្សាទុកតម្លៃដែលទើបតែបញ្ចូលពេលមាន Error
 $name    = $_POST['full_name'] ?? '';
 $gender  = $_POST['gender'] ?? 'Male';
 $dob     = $_POST['dob'] ?? '';
